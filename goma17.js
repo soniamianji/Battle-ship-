@@ -20,21 +20,17 @@ var model = {
 	fire: function(guess) {
             //Guess ye chi too mayehaie A5 ya injoori
             var shuts = 0;
-            console.log("guess = " + guess   );
             if(this.submarine[0].location == guess){
-                view.displaySubmarineHit(guess);
+                view.displaySubmarine(guess);
                 view.displayMessage("You sank my Submarine!");
                 shuts++;
-          
                 alert('dadashi submarinam zadi damet garm');
-
+                return true;
             }
 		for (var i = 0; i < this.numShips; i++) {
             var ship = this.ships[i];
             var index = ship.locations.indexOf(guess);
-            //injza age guess ma too array bood ke ye add mide.. age nabood mige nist ya dar haghighat 'index' mishe null
-			// here's an improvement! Check to see if the ship
-            // has already been hit, message the user, and return true.
+                        // has already been hit, message the user, and return true.
 			if (ship.hits[index] === "hit") {
 				view.displayMessage("Oops, you already hit that location!");
                 return true;
@@ -46,23 +42,17 @@ var model = {
                 shuts++;
                 if(shuts ==2){
                     doubleShut = true;
+                    view.displayMessage("You sank my submarine and battleship in one shot!");
+                    view.displayDoubleShot(guess);
                 }
                 if (this.isSunk(ship)) {
 					view.displayMessage("You sank my battleship!");
                     this.shipsSunk++;
-                 
-				}
+                }
+                
                return true;
-
             }
-         
-            // if (this.isSunk(ship)) {
-            //     view.displayMessage("You sank my battleship!");
-            //     this.shipsSunk++;
-            // }
-            // return true;
         }
-		//AGE DOUBLESHOT TRUE BOOD, PAS AXE DOUBLE SHOT RO NESHUN BEDE 
 		view.displayMiss(guess);
 		view.displayMessage("You missed.");
         return false;
@@ -147,10 +137,15 @@ var view = {
 		cell.setAttribute("class", "hit");
     },
     
-    displaySubmarineHit: function(location){
+    displaySubmarine: function(location){
         var cell = document.getElementById(location);
         cell.setAttribute("class", "submarine");
     },
+
+    displayDoubleShot: function(location){
+        var cell = document.getElementById(location);
+        cell.setAttribute("class", "doubleShot");
+    }
 
 	displayMiss: function(location) {
 		var cell = document.getElementById(location);
@@ -172,7 +167,7 @@ var controller = {
                 this.shoot++;
             }*/
            // view.displayMessage("You have shot" + this.gueees + "and" + this.shoot + "of them were a hit!");
-			if (hit && model.shipsSunk === model.numShips) {
+			if (hit && model.shipsSunk === model.numShips {
 					view.displayMessage("You sank all my battleships, in " + this.guesses + " guesses");
 			}
 		}
