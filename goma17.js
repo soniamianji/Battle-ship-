@@ -21,6 +21,7 @@ var model = {
         {location: 0, hits: [""]},
     ],
 	fire: function(guess) {
+            var isSubHit = false;
             //Guess ye chi too mayehaie A5 ya injoori
             var shuts = 0;
             if(this.submarine[0].location == guess){
@@ -29,7 +30,7 @@ var model = {
                 this.subSunk++;
                 shuts++;
                 //alert('dadashi submarinam zadi damet garm');
-                return true;
+                isSubHit = true;
             }
             
 		for (var i = 0; i < this.numShips; i++) {
@@ -51,7 +52,11 @@ var model = {
 					view.displayMessage("You sank my battleship!");
                     this.shipsSunk++;
                 }
-            
+                console.log("shuts: " + shuts);
+                if (shuts == 2 ){
+                    view.displayDoubleShot(guess);
+                    view.displayMessage("You sank my submarine and my battleship in one shot!")
+                }
                return true;
                
             
@@ -61,13 +66,11 @@ var model = {
             }
             
         }
-        if (shuts == 2 ){
-            alert("doubleshut");
-        }
+        
 		view.displayMiss(guess);
         view.displayMessage("You missed.");
         this.shipsMissed++;
-        return false;
+        return isSubHit;
     },
 	
 
