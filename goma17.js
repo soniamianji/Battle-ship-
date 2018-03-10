@@ -3,10 +3,13 @@ var model = {
 	numShips: 3,
 	shipLength: 3,
     shipsSunk: 0,
+    shipHit: 0,
     numbSubmarine: 1,
     subLength: 1,
     subSunk:0,
     doubleShut:false,
+    shipsMissed: 0,
+
 	
 	ships: [
 		{ locations: [0, 0, 0], hits: ["", "", ""] },
@@ -23,38 +26,47 @@ var model = {
             if(this.submarine[0].location == guess){
                 view.displaySubmarine(guess);
                 view.displayMessage("You sank my Submarine!");
+                this.subSunk++;
                 shuts++;
-                alert('dadashi submarinam zadi damet garm');
+                //alert('dadashi submarinam zadi damet garm');
                 return true;
             }
+            
 		for (var i = 0; i < this.numShips; i++) {
             var ship = this.ships[i];
             var index = ship.locations.indexOf(guess);
                         // has already been hit, message the user, and return true.
-			if (ship.hits[index] === "hit") {
+			if (ship.hits[index] === "hit"  ) {
 				view.displayMessage("Oops, you already hit that location!");
                 return true;
                 
 			} else if (index >= 0 ) {
                 ship.hits[index] = "hit";
+                this.shipHit++;
 				view.displayHit(guess);
                 view.displayMessage("HIT!");
                 shuts++;
-                if(shuts ==2){
-                    doubleShut = true;
-                    view.displayMessage("You sank my submarine and battleship in one shot!");
-                    view.displayDoubleShot(guess);
-                }
+               
                 if (this.isSunk(ship)) {
 					view.displayMessage("You sank my battleship!");
                     this.shipsSunk++;
                 }
-                
+            
                return true;
+               
+            
             }
+            if (this.submarine[0].hits){
+                view.displayMessage("oops,you alrady sank the submarine!")
+            }
+            
+        }
+        if (shuts == 2 ){
+            alert("doubleshut");
         }
 		view.displayMiss(guess);
-		view.displayMessage("You missed.");
+        view.displayMessage("You missed.");
+        this.shipsMissed++;
         return false;
     },
 	
@@ -129,8 +141,13 @@ var model = {
 var view = {
 	displayMessage: function(msg) {
 		var messageArea = document.getElementById("messageArea");
-		messageArea.innerHTML = msg;
-	},
+        messageArea.innerHTML = msg;
+        
+    },
+    displayStatsMsg: function(msg){
+        var statsMsg = document.getElementById("stats");
+        statsMsg.innerHTML = msg;
+    },
 
 	displayHit: function(location) {
 		var cell = document.getElementById(location);
@@ -145,7 +162,7 @@ var view = {
     displayDoubleShot: function(location){
         var cell = document.getElementById(location);
         cell.setAttribute("class", "doubleShot");
-    }
+    },
 
 	displayMiss: function(location) {
 		var cell = document.getElementById(location);
@@ -163,12 +180,10 @@ var controller = {
 		if (location) {
 			this.guesses++;
             var hit = model.fire(location);
-            /*if (hit){
-                this.shoot++;
-            }*/
-           // view.displayMessage("You have shot" + this.gueees + "and" + this.shoot + "of them were a hit!");
-			if (hit && model.shipsSunk === model.numShips {
-					view.displayMessage("You sank all my battleships, in " + this.guesses + " guesses");
+            view.displayStatsMsg("Your hits : " + (model.shipHit + model.subSunk)+ "<br>" + "Your misses : " + model.shipsMissed + "<br>" + "Your total guesses : " + controller.guesses  );
+			if (hit && model.shipsSunk === model.numShips && model.subSunk == 1) {
+                    var accuracy = ((model.shipHit + model.subSunk + model.shipsMissed) / this.guesses);
+					view.displayMessage("You sank all my battleships, and my submarine in " + this.guesses + " guesses." + "Your overal accuracy is " + accuracy );
 			}
 		}
 	}
@@ -243,3 +258,8 @@ function init() {
     model.submarine[0].location =  parseGuess(model.generateSubmarineLocation());
     alert('init karamaa taze submarinam shod ' +  model.submarine[0].location );
 }
+
+
+
+
+//sum of true positivities + true negativity / total guess
