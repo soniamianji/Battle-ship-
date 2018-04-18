@@ -267,7 +267,7 @@ function init() {
 	// place the ships on the game board
     model.generateShipLocations();
     model.submarine[0].location =  parseGuess(model.generateSubmarineLocation());
-    alert('init karamaa taze submarinam shod ' +  model.submarine[0].location );
+   // alert('init karamaa taze submarinam shod ' +  model.submarine[0].location );
 }
 
 
